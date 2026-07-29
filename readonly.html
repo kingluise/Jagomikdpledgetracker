@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pledge Tracker - View Only</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/readonly.css">
+    <style>
+        /* ===== CENTER EVERYTHING ===== */
+        body {
+            text-align: center;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        /* ===== HIDE ACTION BUTTONS & MODALS ===== */
+        .action-buttons {
+            display: none !important;
+        }
+        .modal-overlay {
+            display: none !important;
+        }
+        .controls {
+            display: none !important;
+        }
+        .profile-section .actions .btn-primary {
+            display: none !important;
+        }
+        .profile-section .actions .btn-outline {
+            display: inline-block !important;
+        }
+
+        /* ===== CENTER TABLE ===== */
+        .table-container {
+            text-align: center;
+        }
+
+        table {
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        /* ===== CENTER CARDS ===== */
+        .summary-cards {
+            justify-content: center;
+        }
+
+        .card {
+            text-align: center;
+        }
+
+        /* ===== CENTER PROFILE ===== */
+        .profile-section {
+            text-align: center;
+        }
+
+        .profile-section .bio {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== CENTER FOOTER ===== */
+        .footer {
+            text-align: center;
+        }
+
+        /* ===== CENTER EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+        }
+
+        /* ===== CENTER LOADING ===== */
+        .loading {
+            text-align: center;
+        }
+
+        /* ===== CENTER ACTIONS ===== */
+        .readonly-actions {
+            justify-content: center;
+        }
+
+        /* ===== CENTER VIEW BADGE ===== */
+        .view-badge {
+            display: inline-block;
+        }
+
+        /* ===== CENTER TOAST ===== */
+        .toast-container {
+            text-align: right;
+        }
+
+        .toast {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container readonly-wrapper">
+
+        <div class="profile-section readonly-profile">
+            <span class="view-badge"></span>
+            <div class="avatar">👀</div>
+            <h1>JAGOM Ikorodu Pledge Payment Tracker</h1>
+            <div class="location">View member pledges, payments, and progress.</div>
+            <div class="actions readonly-actions">
+                <button class="btn btn-outline" onclick="exportPDF()">📄 Export PDF</button>
+                <button class="btn btn-outline" onclick="refreshData()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <div class="summary-cards readonly-cards" id="summaryCards">
+            <div class="card">
+                <h3>Total Pledged</h3>
+                <div class="amount blue" id="totalPledged">₦0.00</div>
+            </div>
+            <div class="card">
+                <h3>Total Received</h3>
+                <div class="amount green" id="totalReceived">₦0.00</div>
+            </div>
+            <div class="card">
+                <h3>Remaining</h3>
+                <div class="amount orange" id="remaining">₦0.00</div>
+            </div>
+            <div class="card">
+                <h3>Total Members</h3>
+                <div class="amount blue" id="totalMembers">0</div>
+            </div>
+        </div>
+
+        <div class="table-container readonly-table">
+            <div id="loadingMessage" class="loading readonly-loading">
+                <div class="spinner"></div>
+                Loading data...
+            </div>
+            <div id="tableWrapper" style="display:none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Member Name</th>
+                            <th>Pledged</th>
+                            <th>Paid</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pledgeTableBody">
+                    </tbody>
+                </table>
+                <div id="emptyState" class="empty-state readonly-empty" style="display:none;">
+                    <span class="empty-icon">📋</span>
+                    <h3>No pledges found</h3>
+                    <p>Check back later.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer readonly-footer">
+            <span class="refresh-indicator">
+                <span class="dot"></span> Auto-refreshes every 30s • <span id="refreshTime">Loading...</span>
+            </span>
+        </div>
+
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div class="toast-container readonly-toast" id="toastContainer"></div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js">
+    </script>
+    <script src="js/readonly.js"></script>
+
+</body>
+</html>

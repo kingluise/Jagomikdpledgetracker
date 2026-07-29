@@ -1,0 +1,355 @@
+/* ===== READONLY PAGE SUPPORTING STYLES ===== */
+/* These styles enhance the view-only page without breaking existing styles */
+
+/* ===== CONTAINER SPACING ===== */
+.readonly-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* ===== PROFILE SECTION ENHANCEMENTS ===== */
+.readonly-profile {
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    border: 1px solid #e2e8f0;
+    position: relative;
+    overflow: hidden;
+}
+
+.readonly-profile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0f172a, #22c55e);
+}
+
+.readonly-profile .avatar {
+    background: linear-gradient(135deg, #e2e8f0, #f1f5f9);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.readonly-profile .role {
+    color: #64748b;
+    font-weight: 600;
+}
+
+.readonly-profile .location {
+    color: #94a3b8;
+}
+
+.readonly-profile .bio {
+    color: #475569;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ===== VIEW-ONLY BADGE ===== */
+.view-badge {
+    display: inline-block;
+    background: #e2e8f0;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 16px;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.readonly-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.readonly-actions .btn {
+    min-width: 140px;
+}
+
+.readonly-actions .btn-outline {
+    border-color: #e2e8f0;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.readonly-actions .btn-outline:hover {
+    border-color: #0f172a;
+    background: #f8fafc;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+}
+
+/* ===== CARD ENHANCEMENTS ===== */
+.readonly-cards .card {
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.readonly-cards .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.readonly-cards .card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 3px;
+    border-radius: 50px;
+    background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+    transition: width 0.3s ease;
+}
+
+.readonly-cards .card:hover::after {
+    width: 70%;
+}
+
+.readonly-cards .card .amount {
+    font-size: 30px;
+    letter-spacing: -0.5px;
+}
+
+.readonly-cards .card .amount.green {
+    color: #22c55e;
+}
+
+.readonly-cards .card .amount.blue {
+    color: #0f172a;
+}
+
+.readonly-cards .card .amount.orange {
+    color: #f59e0b;
+}
+
+/* ===== TABLE ENHANCEMENTS ===== */
+.readonly-table {
+    border: 1px solid #f1f5f9;
+}
+
+.readonly-table thead {
+    background: #f8fafc;
+}
+
+.readonly-table th {
+    color: #475569;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.readonly-table td {
+    color: #0f172a;
+    font-size: 14px;
+    padding: 16px 20px;
+}
+
+.readonly-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.readonly-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.readonly-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ===== STATUS BADGE ENHANCEMENTS ===== */
+.readonly-table .status-badge {
+    font-size: 12px;
+    padding: 4px 16px;
+    border-radius: 50px;
+    font-weight: 500;
+}
+
+.status-paid {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-partial {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.status-unpaid {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* ===== EMPTY STATE ENHANCEMENTS ===== */
+.readonly-empty {
+    padding: 60px 20px;
+}
+
+.readonly-empty h3 {
+    color: #475569;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.readonly-empty p {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.readonly-empty .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+    opacity: 0.6;
+}
+
+/* ===== LOADING ENHANCEMENTS ===== */
+.readonly-loading {
+    padding: 60px 20px;
+    color: #94a3b8;
+}
+
+.readonly-loading .spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #0f172a;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===== FOOTER ENHANCEMENTS ===== */
+.readonly-footer {
+    text-align: center;
+    margin-top: 32px;
+    padding: 20px 0;
+    color: #94a3b8;
+    font-size: 13px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.readonly-footer .refresh-indicator {
+    display: inline-block;
+    animation: pulse 2s infinite;
+}
+
+.readonly-footer .refresh-indicator .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* ===== TOAST ENHANCEMENTS ===== */
+.readonly-toast .toast {
+    border-radius: 12px;
+    font-size: 14px;
+    padding: 14px 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .readonly-profile {
+        padding: 32px 16px;
+    }
+
+    .readonly-profile h1 {
+        font-size: 28px;
+    }
+
+    .readonly-profile .bio {
+        font-size: 14px;
+        padding: 0 10px;
+    }
+
+    .readonly-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .readonly-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .readonly-cards {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .readonly-cards .card {
+        padding: 16px;
+    }
+
+    .readonly-cards .card .amount {
+        font-size: 24px;
+    }
+
+    .readonly-table th,
+    .readonly-table td {
+        padding: 10px 12px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .readonly-table {
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .readonly-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .readonly-profile h1 {
+        font-size: 24px;
+    }
+
+    .readonly-profile .avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+    }
+
+    .readonly-table th,
+    .readonly-table td {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+}

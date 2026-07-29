@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Church Pledge Tracker</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🙏 Pledge Tracker - Admin</h1>
+            <div class="header-actions">
+                <button class="btn btn-success" onclick="openAddMemberModal()">➕ Add Member</button>
+                <button class="btn btn-info" onclick="exportPDF()">📄 Export PDF</button>
+                <button class="btn btn-secondary" onclick="refreshData()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <!-- SUMMARY CARDS -->
+        <div class="summary-cards" id="summaryCards">
+            <div class="card">
+                <h3>Total Pledged</h3>
+                <div class="amount blue" id="totalPledged">$0.00</div>
+            </div>
+            <div class="card">
+                <h3>Total Received</h3>
+                <div class="amount green" id="totalReceived">$0.00</div>
+            </div>
+            <div class="card">
+                <h3>Remaining</h3>
+                <div class="amount orange" id="remaining">$0.00</div>
+            </div>
+            <div class="card">
+                <h3>Total Members</h3>
+                <div class="amount blue" id="totalMembers">0</div>
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="🔍 Search by member name..." onkeyup="filterTable()">
+            <select id="statusFilter" onchange="filterTable()">
+                <option value="all">All Status</option>
+                <option value="Fully Paid">Fully Paid</option>
+                <option value="Partial">Partial</option>
+                <option value="Unpaid">Unpaid</option>
+            </select>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-container">
+            <div id="loadingMessage" class="loading">Loading data...</div>
+            <div id="tableWrapper" style="display:none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Member Name</th>
+                            <th>Pledged</th>
+                            <th>Paid</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pledgeTableBody">
+                    </tbody>
+                </table>
+                <div id="emptyState" class="empty-state" style="display:none;">
+                    <h3>No pledges found</h3>
+                    <p>Add a member to get started.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Add Member ===== -->
+    <div class="modal-overlay" id="addMemberModal">
+        <div class="modal">
+            <h2>Add New Member</h2>
+            <form id="addMemberForm" onsubmit="submitAddMember(event)">
+                <div class="form-group">
+                    <label for="memberName">Member Name *</label>
+                    <input type="text" id="memberName" required placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label for="initialPledge">Initial Pledge Amount ($) *</label>
+                    <input type="number" id="initialPledge" required step="0.01" min="0" placeholder="0.00">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addMemberModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Edit Member ===== -->
+    <div class="modal-overlay" id="editMemberModal">
+        <div class="modal">
+            <h2>Edit Member</h2>
+            <form id="editMemberForm" onsubmit="submitEditMember(event)">
+                <input type="hidden" id="editMemberId">
+                <div class="form-group">
+                    <label for="editMemberName">Member Name *</label>
+                    <input type="text" id="editMemberName" required placeholder="Enter full name">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editMemberModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Edit Pledge ===== -->
+    <div class="modal-overlay" id="editPledgeModal">
+        <div class="modal">
+            <h2>Edit Pledge Amount</h2>
+            <form id="editPledgeForm" onsubmit="submitEditPledge(event)">
+                <input type="hidden" id="editPledgeId">
+                <div class="form-group">
+                    <label for="editPledgeMemberName">Member</label>
+                    <input type="text" id="editPledgeMemberName" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="editPledgeAmount">Pledge Amount ($) *</label>
+                    <input type="number" id="editPledgeAmount" required step="0.01" min="0" placeholder="0.00">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editPledgeModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Pledge</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Record Payment ===== -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal">
+            <h2>Record Payment</h2>
+            <form id="paymentForm" onsubmit="submitPayment(event)">
+                <div class="form-group">
+                    <label for="paymentMemberSelect">Select Member *</label>
+                    <select id="paymentMemberSelect" required onchange="loadMemberPaymentDetails()">
+                        <option value="">-- Select Member --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="paymentPledgeAmount">Amount Pledged</label>
+                    <input type="text" id="paymentPledgeAmount" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="paymentOutstandingBalance">Outstanding Balance</label>
+                    <input type="text" id="paymentOutstandingBalance" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="paymentAmountPaid">Current Paid ($) *</label>
+                    <input type="number" id="paymentAmountPaid" required step="0.01" min="0.01" placeholder="0.00" oninput="calculatePaymentBalance()">
+                </div>
+                <div class="form-group">
+                    <label for="paymentTotalBalance">Total Balance After Payment</label>
+                    <input type="text" id="paymentTotalBalance" disabled>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('paymentModal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Record Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js">
+    </script>
+    <script src="js/admin.js"></script>
+
+</body>
+</html>
