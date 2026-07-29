@@ -10,28 +10,13 @@ const REFRESH_INTERVAL = 30000; // 30 seconds
 // =====================================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    loadData();
+    loadSummary();
     startAutoRefresh();
 });
 
 // =====================================================
-// DATA LOADING
+// LOAD SUMMARY ONLY
 // =====================================================
-
-async function loadData() {
-    try {
-        showLoading(true);
-        await Promise.all([
-            loadSummary(),
-            loadPledges()
-        ]);
-    } catch (error) {
-        console.error('Error loading data:', error);
-        showToast('Failed to load data. Please refresh.', 'error');
-    } finally {
-        showLoading(false);
-    }
-}
 
 async function loadSummary() {
     try {
@@ -52,74 +37,6 @@ async function loadSummary() {
     }
 }
 
-async function loadPledges() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/Public/pledges`);
-        if (!response.ok) throw new Error('Failed to load pledges');
-        
-        const data = await response.json();
-        renderTable(data);
-        
-    } catch (error) {
-        console.error('Error loading pledges:', error);
-        showToast('Failed to load pledges data', 'error');
-    }
-}
-
-// =====================================================
-// RENDER TABLE
-// =====================================================
-
-function renderTable(data) {
-    const tbody = document.getElementById('pledgeTableBody');
-    const emptyState = document.getElementById('emptyState');
-    const tableWrapper = document.getElementById('tableWrapper');
-    
-    if (data.length === 0) {
-        tbody.innerHTML = '';
-        emptyState.style.display = 'block';
-        tableWrapper.style.display = 'block';
-        return;
-    }
-    
-    emptyState.style.display = 'none';
-    tableWrapper.style.display = 'block';
-    
-    let html = '';
-    
-    data.forEach(item => {
-        html += `
-            <tr>
-                <td>${item.serialNumber}</td>
-                <td>${formatCurrency(item.totalPledged)}</td>
-                <td>${formatCurrency(item.totalPaid)}</td>
-                <td>${formatCurrency(item.balance)}</td>
-                <td>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${item.percentagePaid}%;"></div>
-                        </div>
-                        <span class="progress-text">${item.percentagePaid}%</span>
-                    </div>
-                </td>
-            </tr>
-        `;
-    });
-    
-    tbody.innerHTML = html;
-    
-    // Animate progress bars after a small delay
-    setTimeout(() => {
-        document.querySelectorAll('.progress-fill').forEach(bar => {
-            const width = bar.style.width;
-            bar.style.width = '0%';
-            setTimeout(() => {
-                bar.style.width = width;
-            }, 100);
-        });
-    }, 200);
-}
-
 // =====================================================
 // AUTO REFRESH
 // =====================================================
@@ -127,7 +44,7 @@ function renderTable(data) {
 function startAutoRefresh() {
     setInterval(() => {
         updateRefreshIndicator();
-        loadData();
+        loadSummary();
     }, REFRESH_INTERVAL);
 }
 
@@ -171,17 +88,4 @@ function showToast(message, type = 'info') {
 
 function formatCurrency(amount) {
     return `₦${amount.toFixed(2)}`;
-}
-
-function showLoading(show) {
-    const loading = document.getElementById('loadingMessage');
-    const tableWrapper = document.getElementById('tableWrapper');
-    
-    if (show) {
-        loading.style.display = 'block';
-        tableWrapper.style.display = 'none';
-    } else {
-        loading.style.display = 'none';
-        tableWrapper.style.display = 'block';
-    }
 }
