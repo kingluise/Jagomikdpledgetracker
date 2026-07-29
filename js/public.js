@@ -34,6 +34,7 @@ async function loadSummary() {
         document.getElementById('totalPledged').textContent = 'Error';
         document.getElementById('totalReceived').textContent = 'Error';
         document.getElementById('remaining').textContent = 'Error';
+        showToast('Failed to load data. Please refresh.', 'error');
     }
 }
 
@@ -67,6 +68,8 @@ function updateRefreshIndicator() {
 
 function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
+    if (!container) return;
+    
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.textContent = message;
