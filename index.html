@@ -8,6 +8,8 @@
 </head>
 <body>
 
+    <canvas id="confettiCanvas"></canvas>
+
     <div class="container">
         <!-- HEADER -->
         <div class="header">
@@ -15,25 +17,122 @@
             <p>Anonymous pledge tracking - showing total progress Summary</p>
         </div>
 
+        <!-- ACTION BUTTONS -->
+        <div class="pay-btn-wrapper">
+            <button class="pay-btn" onclick="openPaymentModal()">💳 How to Pay</button>
+            <button class="share-btn" onclick="shareProgress()">📤 Share Progress</button>
+        </div>
+
         <!-- SUMMARY CARDS -->
         <div class="summary-cards" id="summaryCards">
+            <div class="card">
+                <h3>🎯 Goal</h3>
+                <div class="amount blue" id="goalAmount">₦5,000,000</div>
+            </div>
             <div class="card">
                 <h3>Total Pledged</h3>
                 <div class="amount blue" id="totalPledged">₦0.00</div>
             </div>
             <div class="card">
-                <h3>Total Received</h3>
+                <h3>💰 Received</h3>
                 <div class="amount green" id="totalReceived">₦0.00</div>
             </div>
             <div class="card">
-                <h3>Remaining</h3>
+                <h3>🧾 Outstanding</h3>
                 <div class="amount orange" id="remaining">₦0.00</div>
+            </div>
+            <div class="card">
+                <h3>📊 Progress</h3>
+                <div class="amount orange" id="progressPercent">0%</div>
+            </div>
+            <div class="card">
+                <h3>⏳ Time Left</h3>
+                <div class="amount purple" id="countdownAmount">--</div>
+            </div>
+        </div>
+
+        <!-- PROGRESS + DONUT -->
+        <div class="progress-section">
+            <div class="progress-header-row">
+
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-large">
+                        <div class="progress-fill-large" id="progressFill" style="width: 0%;"></div>
+                        <div class="milestone-marker" style="left:25%"></div>
+                        <div class="milestone-marker" style="left:50%"></div>
+                        <div class="milestone-marker" style="left:75%"></div>
+                    </div>
+                    <div class="milestone-labels">
+                        <span style="left:0%">0%</span>
+                        <span style="left:25%" id="milestone25">25%</span>
+                        <span style="left:50%" id="milestone50">50%</span>
+                        <span style="left:75%" id="milestone75">75%</span>
+                        <span style="left:100%" id="milestone100">🎯 Goal</span>
+                    </div>
+                    <div class="progress-text-large">
+                        <span id="remainingText">₦5,000,000 more to reach our goal!</span>
+                    </div>
+                </div>
+
+                <div class="donut-wrap">
+                    <svg viewBox="0 0 120 120" class="donut-svg">
+                        <circle class="donut-bg" cx="60" cy="60" r="50"></circle>
+                        <circle class="donut-fill" id="donutCircle" cx="60" cy="60" r="50"
+                            stroke-dasharray="314.159" stroke-dashoffset="314.159"></circle>
+                        <text x="60" y="65" text-anchor="middle" class="donut-text" id="donutText">0%</text>
+                    </svg>
+                    <div class="donut-legend">
+                        <span><i class="dot green"></i> Received</span>
+                        <span><i class="dot gray"></i> Remaining</span>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <!-- FOOTER -->
         <div class="footer">
             <span class="refresh-indicator" id="refreshIndicator">Auto-refreshes every 30s • Loading...</span>
+            <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()" title="Refresh now">🔄</button>
+        </div>
+    </div>
+
+    <!-- ===== PAYMENT MODAL ===== -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePaymentModal()">✕</button>
+
+            <h2 class="modal-title">💰 Make Payment</h2>
+            <p class="modal-subtitle">Send your pledge to the account below:</p>
+            
+            <div class="payment-details">
+                <div class="payment-row">
+                    <span class="payment-label">Bank:</span>
+                    <span class="payment-value">Guarantee Trust Bank (GTB)</span>
+                </div>
+                <div class="payment-row">
+                    <span class="payment-label">Account Name:</span>
+                    <span class="payment-value">Jesus Army Ikorodu</span>
+                </div>
+                <div class="payment-row copy-row">
+                    <span class="payment-label">Account Number:</span>
+                    <span class="payment-value account-number" id="accountNumber">0015181353</span>
+                    <button class="copy-btn" onclick="copyAccountNumber()">📋 Copy</button>
+                </div>
+                <div class="payment-row">
+                    <span class="payment-label">Reference:</span>
+                    <span class="payment-value">Your Full Name</span>
+                </div>
+            </div>
+
+            <div class="qr-wrap">
+                <img id="qrCodeImg" class="qr-code" alt="Scan to get account number" width="140" height="140">
+                <p class="qr-caption">📱 Scan to save account number</p>
+            </div>
+            
+            <p class="modal-note">💡 After payment, please inform the admin to confirm your pledge.</p>
+            
+            <button class="modal-close-btn" onclick="closePaymentModal()">Close</button>
         </div>
     </div>
 
