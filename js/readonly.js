@@ -37,10 +37,14 @@ async function loadSummary() {
         if (!response.ok) throw new Error('Failed to load summary');
         
         const data = await response.json();
+
+        const remaining = (typeof data.remaining === 'number')
+            ? data.remaining
+            : Math.max(data.totalPledged - data.totalReceived, 0);
         
-        document.getElementById('totalPledged').textContent = formatCurrency(data.totalPledged);
-        document.getElementById('totalReceived').textContent = formatCurrency(data.totalReceived);
-        document.getElementById('remaining').textContent = formatCurrency(data.remaining);
+        animateNumber('totalPledged', data.totalPledged);
+        animateNumber('totalReceived', data.totalReceived);
+        animateNumber('remaining', remaining);
         
     } catch (error) {
         console.error('Error loading summary:', error);
@@ -56,13 +60,51 @@ async function loadPledges() {
         const data = await response.json();
         renderTable(data);
         
-        // Update total members count
-        document.getElementById('totalMembers').textContent = data.length;
+        // Update total members count (plain integer, no currency)
+        animateNumber('totalMembers', data.length, '', formatInteger);
         
     } catch (error) {
         console.error('Error loading pledges:', error);
         showToast('Failed to load pledges data', 'error');
     }
+}
+
+// =====================================================
+// NEW: COUNT-UP ANIMATION
+// =====================================================
+
+function animateNumber(elementId, end, suffix = '', formatter = formatCurrency) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    // Read whatever is currently displayed as the animation's start point,
+    // so a refresh counts from the old value instead of always from 0.
+    const currentText = element.textContent.replace(/[^0-9.]/g, '');
+    const start = parseFloat(currentText) || 0;
+
+    const duration = 1200;
+    const startTime = performance.now();
+
+    function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = start + (end - start) * eased;
+
+        element.textContent = formatter(current) + suffix;
+
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        } else {
+            element.textContent = formatter(end) + suffix;
+            element.classList.remove('counted');
+            // Force reflow so the pop animation can replay on refresh
+            void element.offsetWidth;
+            element.classList.add('counted');
+        }
+    }
+
+    requestAnimationFrame(update);
 }
 
 // =====================================================
@@ -87,12 +129,16 @@ function renderTable(data) {
     let html = '';
     let index = 1;
     
-    data.forEach(item => {
+    data.forEach((item, i) => {
         const statusClass = item.status === 'Fully Paid' ? 'status-paid' : 
                            item.status === 'Partial' ? 'status-partial' : 'status-unpaid';
+
+        // Stagger each row's entrance animation slightly, capped so a very
+        // long list doesn't take forever to finish appearing.
+        const delay = Math.min(i * 0.05, 1);
         
         html += `
-            <tr>
+            <tr style="animation-delay:${delay}s">
                 <td>${index++}</td>
                 <td><strong>${escapeHtml(item.memberName)}</strong></td>
                 <td>${formatCurrency(item.totalPledged)}</td>
@@ -192,7 +238,11 @@ async function exportPDF() {
 // =====================================================
 
 function formatCurrency(amount) {
-    return `₦${amount.toFixed(2)}`;
+    return `₦${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+}
+
+function formatInteger(amount) {
+    return Math.round(amount).toString();
 }
 
 function escapeHtml(text) {

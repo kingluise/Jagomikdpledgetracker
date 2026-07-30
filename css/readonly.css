@@ -353,3 +353,144 @@
         font-size: 12px;
     }
 }
+
+/* ============================================================
+   NEW: PAGE-LOAD ENTRANCE ANIMATIONS
+   ============================================================ */
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.6);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes numberPop {
+    0% { transform: scale(1); }
+    45% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+.readonly-profile {
+    animation: fadeSlideUp 0.6s ease both;
+}
+
+.readonly-profile .avatar {
+    animation: popIn 0.5s ease both;
+    animation-delay: 0.1s;
+}
+
+.readonly-profile .view-badge,
+.readonly-profile h1,
+.readonly-profile .location {
+    opacity: 0;
+    animation: fadeSlideUp 0.5s ease both;
+}
+
+.readonly-profile .view-badge { animation-delay: 0.05s; }
+.readonly-profile h1 { animation-delay: 0.15s; }
+.readonly-profile .location { animation-delay: 0.22s; }
+
+.readonly-actions {
+    opacity: 0;
+    animation: fadeSlideUp 0.5s ease both;
+    animation-delay: 0.3s;
+}
+
+.readonly-cards .card {
+    opacity: 0;
+    animation: fadeSlideUp 0.55s ease both;
+}
+
+.readonly-cards .card:nth-child(1) { animation-delay: 0.2s; }
+.readonly-cards .card:nth-child(2) { animation-delay: 0.3s; }
+.readonly-cards .card:nth-child(3) { animation-delay: 0.4s; }
+.readonly-cards .card:nth-child(4) { animation-delay: 0.5s; }
+
+.readonly-table {
+    opacity: 0;
+    animation: fadeSlideUp 0.6s ease both;
+    animation-delay: 0.55s;
+}
+
+.readonly-footer {
+    opacity: 0;
+    animation: fadeSlideUp 0.5s ease both;
+    animation-delay: 0.75s;
+}
+
+/* Each table row fades/slides in as it's rendered (delay set inline via JS) */
+#pledgeTableBody tr {
+    opacity: 0;
+    animation: fadeSlideUp 0.4s ease both;
+}
+
+/* Little pop whenever a number finishes animating/refreshing */
+.card .amount.counted {
+    animation: numberPop 0.3s ease;
+}
+
+/* Smoother, springier hover now that entrance animations exist */
+.readonly-cards .card {
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+/* ============================================================
+   NEW: ANIMATED "LOOKING AROUND" EYES (replaces the 👀 emoji)
+   ============================================================ */
+
+.avatar-eyes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eyes-svg {
+    width: 42%;
+    height: 42%;
+}
+
+.eye-white {
+    fill: #ffffff;
+    stroke: #cbd5e1;
+    stroke-width: 1.5;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: eyeBlink 6s ease-in-out infinite;
+}
+
+.pupil {
+    fill: #0f172a;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: eyeLookAround 7s ease-in-out infinite;
+}
+
+@keyframes eyeLookAround {
+    0%, 8%    { transform: translate(0, 0); }
+    16%, 24%  { transform: translate(7px, 0); }
+    32%, 40%  { transform: translate(-7px, 0); }
+    48%, 56%  { transform: translate(0, -5px); }
+    64%, 72%  { transform: translate(0, 4px); }
+    82%, 100% { transform: translate(0, 0); }
+}
+
+@keyframes eyeBlink {
+    0%, 90%, 100% { transform: scaleY(1); }
+    93%, 96%      { transform: scaleY(0.12); }
+}

@@ -4,7 +4,7 @@
 
 const API_BASE_URL = 'https://jagompledge-001-site1.dtempurl.com/api';
 const REFRESH_INTERVAL = 30000; // 30 seconds
-const GOAL_AMOUNT = 2105000; // ₦2,105,000 - EDIT THIS
+const GOAL_AMOUNT = 2155000; // ₦2,155,000 - EDIT THIS
 const DEADLINE_DATE = new Date('2026-11-30T23:59:59');
 
 const DONUT_CIRCUMFERENCE = 2 * Math.PI * 50; // r=50 in the SVG
