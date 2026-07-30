@@ -458,11 +458,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .eyes-svg {
-    width: 42%;
-    height: 42%;
+    display: block;
+    width: 55%;
+    height: auto;
 }
 
 .eye-white {
